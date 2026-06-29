@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><body>
+<h1>User Management</h1>
+<input id="name" placeholder="Name">
+<input id="email" placeholder="Email">
+<button onclick="addUser()">Add User</button>
+<ul id="users"></ul>
+<script>
+const backendURL = "http://YOUR_VM_IP:31820";
+async function loadUsers(){
+ const res=await fetch(`${backendURL}/users`);
+ const users=await res.json();
+ document.getElementById("users").innerHTML=users.map(u=>`<li>${u.name} - ${u.email}</li>`).join("");
+}
+async function addUser(){
+ const name=document.getElementById("name").value;
+ const email=document.getElementById("email").value;
+ await fetch(`${backendURL}/users`,{
+   method:'POST',
+   headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({name,email})
+ });
+ loadUsers();
+}
+loadUsers();
+</script>
+</body></html>
